@@ -88,12 +88,8 @@ optparse.parse!
 
 puts filters.inspect
 
-# force encoding is required to run this in ruby 1.8 but not in 1.9. 
 class String; 
   include Term::ANSIColor; 
-  def force_encoding(enc)
-    self
-  end
 end
 
 # test project
