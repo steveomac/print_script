@@ -152,9 +152,6 @@ projects.each do |project|
           # set the theme color    
           dev_stream = (card.labels.split(",") & (DEV_STREAMS.keys))
           
-          puts dev_stream[0];
-          puts dev_stream[1];
-          
           card_theme[:color] = (dev_stream.nil? | dev_stream.empty?) ? DEV_STREAMS["none"] : DEV_STREAMS[dev_stream[0]]
                         
           pdf.stroke_color = card_theme[:color]
