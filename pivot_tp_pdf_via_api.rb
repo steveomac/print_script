@@ -30,8 +30,8 @@ DEV_STREAMS = {
 
                   # Capex Statler stream
                   "ts-bttd-cx" => "0a62da",
-                  "ts-hotels in BTTD" => "0a62da",
-                  "ts-hotel matching" => "0a62da",
+                  "ts-hotels in BTTD" => "0a62da",                   # legacy
+                  "ts-hotel matching" => "0a62da",                   # legacy
                   "ts-hotels-cx" => "0a62da",
 
                   # Capex Themes/publishing tools stream
@@ -223,10 +223,10 @@ projects.each do |project|
 
       puts ">>> Updating pivotal labels".black.on_green
       
-#      stories.each do |card|
-#        card.labels = (card.labels.split(",") - ['to-print'] + ['p']).flatten.join(",") unless card.labels.nil?
-#        card.update unless card.labels.nil?
-#      end
+      stories.each do |card|
+        card.labels = (card.labels.split(",") - ['to-print'] + ['p']).flatten.join(",") unless card.labels.nil?
+        card.update unless card.labels.nil?
+      end
 
       system("open", filename)
 
