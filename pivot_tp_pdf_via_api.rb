@@ -25,18 +25,39 @@ BASEDIR=File.dirname(__FILE__)
 options = {}
 filters = {:state => ["unstarted", "started", "finished", "delivered", "accepted", "rejected"], :label => ["to-print"]}
 DEV_STREAMS = {   
-                  "ts - shop digital bundling" => "fa6c0c",
-                  "ts - hotel matching" => "0a62da",
-                  "ts - bau - development" => "00c000",
-                  "ts - bau - design" => "00c000",
-                  "ts - bau - engineering" => "000000",
-                  "ts - bttd" => "0a62da",
-                  "ts - hotels in BTTD" => "0a62da",
-                  "ts - janrain" => "000000",
-                  "ts - moderation" => "000000",
-                  "ts - themes" => "7425b1",
-                  "ts - publishing tools" => "7425b1",
-                  "none" => "000000"
+                  # Capex shop stream
+                  "ts-shop-digi-bundling-ox" => "fa6c0c",
+
+                  # Capex Statler stream
+                  "ts-bttd-cx" => "0a62da",
+                  "ts-hotels in BTTD" => "0a62da",
+                  "ts-hotel matching" => "0a62da",
+                  "ts-hotels-cx" => "0a62da",
+
+                  # Capex Themes/publishing tools stream
+                  "ts-themes-cx" => "7425b1",                # not in SAP yet
+                  "ts-publishing-tools-cx" => "7425b1",      # not in SAP yet
+
+                  # Opex BAU stream
+                  "ts-bau-development" => "00c000",
+                  "ts-bau-design" => "00c000",
+                  "ts-hotels-ox" => "00c000",
+                  "ts-shop-ox" => "00c000",
+                  "ts-advertising-ox" => "00c000",
+                  "ts-marketing-ox" => "00c000",
+                  "ts-editorial-ox" => "00c000",
+                  "ts-poi-place-tagging-ox" => "00c000",      # not in SAP yet
+
+                  # Opex engineering stream
+                  "ts-bau-engineering" => "000000",           # legacy
+                  "ts-janrain" => "000000",                   # legacy
+                  "ts-engineering-ox" => "000000",            # not in SAP yet
+
+                  # Non-project time categories
+                  "ts-meetings-hr-admin" => "cccccc",        
+     
+                  # Grey for everything else
+                  "none" => "cccccc"
                 }
                 
 PivotalTracker::Client.token = 'e3509189146f70a97cc7d12d2e9ba12c'
@@ -67,23 +88,22 @@ optparse.parse!
 
 puts filters.inspect
 
+# force encoding is required to run this in ruby 1.8 but not in 1.9. 
 class String; 
   include Term::ANSIColor; 
-#  def force_encoding(enc)
-#    self
-#  end
+  def force_encoding(enc)
+    self
+  end
 end
 
 # test project
 #projects = [456831]
 
 # epics
-projects = [465769]
-
-
+#projects = [465769]
 
 # real projects
-#projects = [365927,428773]
+projects = [365927,428773]
 
 projects.each do |project|
   
@@ -96,7 +116,7 @@ projects.each do |project|
 
   # --- Generate PDF with Prawn & Prawn::Document::Grid
 
-  filename = "/Users/cussejw6/documents/cards_to_print/PT_to_print_"+Time.now.to_s+"_"+@a_project.name+".pdf"
+  filename = "/Users/mcinnsw6/development/print_script/cards_to_print/PT_to_print_"+Time.now.to_s+"_"+@a_project.name+".pdf"
   
   if stories.length == 0
     puts "no stories to print" 
@@ -120,8 +140,8 @@ projects.each do |project|
           card_theme[:icon] = card.story_type+".png"
             
           # If it is a design job card, then it is a different colour
-          if @a_project.name == 'Online Design'
-            card_theme[:icon] = 'design.png'
+          if card.labels.split(",").include? "design"   
+              card_theme[:icon] = 'design.png'
           end
   
           # If it is a retro action card, then it is a different colour
@@ -129,10 +149,12 @@ projects.each do |project|
             card_theme[:icon] = 'idea.png'
           end
           
-          # set the theme color
-          
+          # set the theme color    
           dev_stream = (card.labels.split(",") & (DEV_STREAMS.keys))
-                    
+          
+          puts dev_stream[0];
+          puts dev_stream[1];
+          
           card_theme[:color] = (dev_stream.nil? | dev_stream.empty?) ? DEV_STREAMS["none"] : DEV_STREAMS[dev_stream[0]]
                         
           pdf.stroke_color = card_theme[:color]
