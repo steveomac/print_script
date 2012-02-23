@@ -98,8 +98,8 @@ end
 # epics
 #projects = [465769]
 
-# real projects
-projects = [365927,428773]
+# real projects [online, hotels + pt]
+projects = [365927, 484029, 484915]
 
 projects.each do |project|
   
